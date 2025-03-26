@@ -1,0 +1,126 @@
+/* ✅ Sidebar Styling */
+.sidebar {
+  background-color: #343a40;
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+}
+
+.sidebar h5 {
+  margin-bottom: 20px;
+}
+
+.sidebar-links {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-links li {
+  padding: 10px 0;
+}
+
+.sidebar-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.sidebar-links a:hover {
+  text-decoration: underline;
+}
+
+/* ✅ Welcome Banner */
+.welcome-banner {
+  background: green;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background: rgb(4, 12, 232);
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ✅ Dashboard Content */
+.dashboard-content {
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* ✅ Summary Cards */
+.summary-card {
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+}
+
+.uploads-card {
+  background-color: #007bff;
+}
+
+.bids-card {
+  background-color: #17a2b8;
+}
+
+.rented-card {
+  background-color: #28a745;
+}
+
+/* ✅ Info Cards */
+.info-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+/* ✅ Land Cards */
+.land-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+/* ✅ Scrolling Banner Effect */
+.welcome-banner {
+  background: green;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.scrolling-text {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: bold;
+  animation: scrollText 10s linear infinite;
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+

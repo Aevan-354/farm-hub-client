@@ -1,0 +1,57 @@
+import React from "react";
+import { Navbar, Nav, Button, Form, FormControl, Container, InputGroup } from "react-bootstrap";
+import { FaSearch } from "react-icons/fa"; // Import search icon
+import "./Header.css"; // Import CSS file
+
+const Header = () => {
+  return (
+    <Navbar expand="lg" className="header">
+      <Container>
+        {/* Logo Section */}
+        <Navbar.Brand href="/" className="logo">Farm-Hub</Navbar.Brand>
+
+        {/* Navbar Toggle for Mobile */}
+        <Navbar.Toggle aria-controls="navbar-nav" />
+        <Navbar.Collapse id="navbar-nav" className="justify-content-between">
+          {/* Navigation Links */}
+          <Nav className="nav-links">
+            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/services">Our Services</Nav.Link>
+            <Nav.Link href="/blogs">Blogs</Nav.Link>
+            <Nav.Link href="/contact">Contact</Nav.Link>
+          </Nav>
+
+          {/* Search Bar with Icon Inside */}
+          <Form className="search-form">
+            <InputGroup>
+              <FormControl type="search" placeholder="Search for land..." />
+              <Form className="d-flex">
+        
+              </Form>
+            </InputGroup>
+          </Form>
+
+          {/* Auth Buttons (Sign In & Register) */}
+          <div className="auth-buttons">
+            <Button variant="outline-success" className="me-2">Sign In</Button>
+            <Button variant="primary">Register</Button>
+          </div>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+};
+
+export default Header;
+
+
+<Container>
+        <Navbar.Brand href="/">Farm-Hub</Navbar.Brand>
+
+        {/* left Side Icons */}
+        <Nav>
+        <Nav.Link href="/home" className="text-white">Home</Nav.Link>
+          <Nav.Link href="/our services" className="text-white">Our Services</Nav.Link>
+          <Nav.Link href="/blogs" className="text-white">Blogs</Nav.Link>
+          <Nav.Link href="/contact us" className="text-white">Contact Us</Nav.Link>
+          </Nav>

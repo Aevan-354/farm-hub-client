@@ -1,0 +1,38 @@
+/* RentedLands.css */
+.rented-lands-container {
+    max-width: 95%;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .rented-lands-card {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .rented-lands-table thead {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .rented-lands-table th,
+  .rented-lands-table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .land-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  

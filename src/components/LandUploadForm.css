@@ -1,0 +1,65 @@
+/* 🏡 Form Container */
+.upload-form-container {
+  max-width: 40%;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+/* 📋 Form Box */
+.form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 📌 Labels */
+.form-box label {
+  font-weight: bold;
+}
+
+/* 🎨 Form Fields */
+.form-box input,
+.form-box textarea {
+  width: 80%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+/* 📤 Upload Button */
+.upload-btn {
+  width: 100%;
+  background: #008000;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.upload-btn:hover {
+  background: #006400;
+}
+.upload-form-container {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.upload-btn {
+  width: 100%;
+  background: #28a745;
+  border: none;
+}
+
+.upload-btn:disabled {
+  background: #ccc;
+}

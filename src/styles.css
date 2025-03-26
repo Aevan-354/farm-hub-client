@@ -1,0 +1,151 @@
+/* Center the form and add transparency */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("./assets/bg19.jpg") no-repeat center center/cover;
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.139); /* Transparent white */
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.login-box h2 {
+  color: white;
+  margin-bottom: 15px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #28a745;
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #218838;
+}
+
+.login-box p {
+  margin-top: 10px;
+  color: white;
+}
+
+.login-box a {
+  color: #00f7ff;
+  text-decoration: none;
+}
+.back-home-btn {
+  margin-top: 10px;
+  background-color: #28a745; /* Green color */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+}
+
+.back-home-btn:hover {
+  background-color: #218838;
+}
+
+/* Loading Overlay - Covers entire screen */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.6); /* Dark overlay effect */
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Circular spinner animation */
+.spinner {
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Hide login box when loading */
+.loading .login-box {
+  opacity: 0;
+  pointer-events: none;
+}
+.success-message-box {
+  position: fixed;
+  top: 10px; /* Adjust this to move it up/down */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #d4edda46; /* Light green background */
+  color: #0a2ceb; /* Dark green text */
+  padding: 15px 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #cffd03;
+  width: fit-content;
+  z-index: 1000; /* Ensures it stays on top */
+  animation: fadeOut 3s ease-in-out forwards; /* Auto hides after 3s */
+}
+
+/* Animation for auto-hiding the message */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.land-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.land-card {
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+

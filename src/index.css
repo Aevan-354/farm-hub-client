@@ -1,0 +1,47 @@
+body {
+  background: url("./assets/bg16.jpg") no-repeat center center fixed;
+  /*background-size: contain;*/
+  margin: 0;
+  padding: 0;
+}
+
+.hero-section {
+  background: url("./assets/bg16.jpg") no-repeat center center/cover;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 40px;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: auto;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-top: 10px;
+  border: none;
+  background-color: #f8fcf9;
+  color: #006400;
+  transition: all 0.3s ease;
+}
+
+.hero-section button:hover {
+  background-color: #228B22;
+  color: white;
+}
