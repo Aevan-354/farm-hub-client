@@ -7,22 +7,23 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
-import bg12 from "./assets/bg12.jpg";
+import bg25 from "./assets/bg25.jpg";
 import "./index.css";
 import UploadLand from "./pages/UploadLand";
-import LandBiddings from './components/LandBiddingTable';
 import MyBiddings from './components/MyBiddings';
 import RentedLands from './components/RentedLands';
 import PaymentTable from './components/PaymentTable';
 import ReviewForm from "./components/ReviewForm";
-
+import Profile from "./pages/Profile"
+import MarketPlace from "./components/BidForm";
+import BidPage from "./pages/BidPage";
 
 function App() {
   return (
     <Router>
       <div
         style={{
-          backgroundImage: `url(${bg12})`,
+          backgroundImage: `url(${bg25})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "100vh",
@@ -38,11 +39,12 @@ function App() {
           <Route path="/dashboard" element={<PrivateRoute />} >
             <Route index element={<Dashboard />} />
             <Route path="upload-land" element={<UploadLand />} /> 
-            <Route path="land-bidding" element={<LandBiddings />} /> 
             <Route path="my-biddings" element={<MyBiddings />} /> 
             <Route path="rented-lands" element={<RentedLands />} /> 
             <Route path="payments" element={<PaymentTable />} /> 
             <Route path="reviews" element={<ReviewForm />} /> 
+            <Route path="profile" element={<Profile />} />
+            <Route path="market-place" element={<MarketPlace/>} />
           </Route>
         </Routes>
         <Footer />

@@ -55,3 +55,474 @@ export default Header;
           <Nav.Link href="/blogs" className="text-white">Blogs</Nav.Link>
           <Nav.Link href="/contact us" className="text-white">Contact Us</Nav.Link>
           </Nav>
+
+
+          const express = require("express");
+const cors = require("cors");
+const pool = require("./db"); // Ensure PostgreSQL pool is correctly set up
+const authRoutes = require("./routes/authRoutes");
+const landRoutes = require("./routes/landRoutes"); // Ensure correct import
+const bidsRoutes = require("./routes/bidRoutes"); // Ensure correct import
+const profileRoutes = require("./routes/profileRoutes"); // Import profile routes
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.urlencoded({ extended: true, limit: "30mb" })); // Ensure URL-encoded request body is processed correctly
+app.use(express.json({limit: '30mb'})); // Ensure JSON request body is processed correctly
+
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api", landRoutes); // ✅ This ensures /api/lands works
+app.use("/api/bids", bidsRoutes);
+app.use("/api/profile", profileRoutes)
+app.use("/uploads", express.static("uploads"));
+
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, async () => {
+  try {
+    const client =await pool.connect();
+    console.log("✅ Connected to PostgreSQL Database")
+    console.log(`Server running on port ${PORT}`);
+  } catch (error) {
+    console.error("❌ Database Connection Error:", error)
+  }
+});
+
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const multer = require("multer");
+const path = require("path");
+const pool = require("../config/db"); // PostgreSQL connection
+
+const router = express.Router();
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: "./uploads/",
+  filename: (req, file, cb) => {
+    cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+const upload = multer({ storage });
+
+// 🔹 Get user profile
+router.get("/", async (req, res) => {
+  try {
+    const userId = req.user.id; // Extracted from auth middleware
+    const result = await pool.query("SELECT name, email, profile_pic FROM users WHERE id = $1", [userId]);
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// 🔹 Update password
+router.post("/update-password", async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    // Fetch the current hashed password
+    const result = await pool.query("SELECT password FROM users WHERE id = $1", [userId]);
+    const isMatch = await bcrypt.compare(currentPassword, result.rows[0].password);
+    if (!isMatch) return res.status(400).json({ error: "Incorrect current password" });
+
+    // Hash new password and update
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query("UPDATE users SET password = $1 WHERE id = $2", [hashedPassword, userId]);
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// 🔹 Upload profile picture
+router.post("/upload-profile-pic", upload.single("profilePic"), async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const profilePicPath = req.file.filename;
+
+    await pool.query("UPDATE users SET profile_pic = $1 WHERE id = $2", [profilePicPath, userId]);
+
+    res.json({ message: "Profile picture updated", profilePic: profilePicPath });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+module.exports = router;
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Container, Form, Button, Card, Row, Col } from "react-bootstrap";
+
+const Profile = () => {
+  const [user, setUser] = useState({ name: "Aevan", email: "aevan@example.com", profile_pic: "" });
+  const [newPassword, setNewPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [profilePic, setProfilePic] = useState(null);
+
+  // Fetch user data (You can replace with actual API call)
+  useEffect(() => {
+    axios.get("/api/profile").then((response) => {
+      setUser(response.data);
+    });
+  }, []);
+
+  // Handle password update
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("/api/profile/update-password", { currentPassword, newPassword });
+      alert("Password updated successfully");
+    } catch (error) {
+      alert("Error updating password");
+    }
+  };
+
+  // Handle profile picture upload
+  const handleProfilePicUpload = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("profilePic", profilePic);
+
+    try {
+      const response = await axios.post("/api/profile/upload-profile-pic", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setUser((prev) => ({ ...prev, profile_pic: response.data.profilePic }));
+    } catch (error) {
+      alert("Error uploading profile picture");
+    }
+  };
+
+  return (
+    <Container className="mt-4">
+      <Card className="shadow-lg p-4">
+        <Row>
+          <Col md={4} className="text-center">
+            <img
+              src={user.profile_pic ? `/uploads/${user.profile_pic}` : "https://via.placeholder.com/150"}
+              alt="Profile"
+              className="rounded-circle mb-3"
+              style={{ width: "150px", height: "150px", objectFit: "cover" }}
+            />
+            <h4>{user.name}</h4>
+            <p className="text-muted">{user.email}</p>
+          </Col>
+
+          <Col md={8}>
+            {/* Change Password */}
+            <Card className="mb-3 p-3">
+              <h5>Change Password</h5>
+              <Form onSubmit={handlePasswordUpdate}>
+                <Form.Group className="mb-2">
+                  <Form.Control
+                    type="password"
+                    placeholder="Current Password"
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mb-2">
+                  <Form.Control
+                    type="password"
+                    placeholder="New Password"
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Button type="submit" variant="primary" className="w-100">
+                  Update Password
+                </Button>
+              </Form>
+            </Card>
+
+            {/* Upload Profile Picture */}
+            <Card className="p-3">
+              <h5>Upload Profile Picture</h5>
+              <Form onSubmit={handleProfilePicUpload}>
+                <Form.Group className="mb-2">
+                  <Form.Control type="file" onChange={(e) => setProfilePic(e.target.files[0])} required />
+                </Form.Group>
+                <Button type="submit" variant="success" className="w-100">
+                  Upload
+                </Button>
+              </Form>
+            </Card>
+          </Col>
+        </Row>
+      </Card>
+    </Container>
+  );
+};
+
+export default Profile;
+
+              {/* ✅ Summary Cards */}
+              <Row>
+                <Col md={4}>
+                  <Card className="summary-card uploads-card">
+                    <Card.Body>
+                      <Card.Title>Total Uploads</Card.Title>
+                      {loading ? <Spinner animation="border" size="sm" /> : <h4>{lands.length}</h4>}
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card className="summary-card bids-card">
+                    <Card.Body>
+                      <Card.Title>Total Bids</Card.Title>
+                      <h4>0</h4>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card className="summary-card rented-card">
+                    <Card.Body>
+                      <Card.Title>Total Rented Lands</Card.Title>
+                      <h4>0</h4>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+
+              {/* ✅ Favorite Lands & Reviews */}
+              <Row>
+                <Col md={6}>
+                  <Card className="info-card">
+                    <Card.Body>
+                      <Card.Title>Payments</Card.Title>
+                      <p>All Payments History</p>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={6}>
+                  <Card className="info-card">
+                    <Card.Body>
+                      <Card.Title>Reviews</Card.Title>
+                      <p>No Reviews Yet</p>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+
+import React, { useState } from "react";
+import { Form, Button, Container } from "react-bootstrap";
+import "./LandUploadForm.css";
+import { postLand } from "../api/upload-land-api";
+import { getCurrentUser } from "../api/get-current-user";
+
+
+const LandUploadForm = ({ setLoading }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    location: "",
+    price: "",
+    size: "",
+    image_url: "",
+  });
+
+  const handleFileChange =(e) =>{
+    const fileInput = e.target;
+    if(!(fileInput && fileInput.files.length)) return;
+    const file = fileInput && fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData({ ...formData, image_url: reader.result });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const [uploading, setUploading] = useState(false); // ✅ Track Upload State
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle form submission
+  const handleSubmit = async e => {
+    
+    e.preventDefault();
+    setUploading(true); // ✅ Show Uploading
+    setLoading(true); // ✅ Activate Loader in Parent Component
+    const message =await postLand({...formData, owner_id: getCurrentUser().id})
+    
+    // Simulate API Call
+    console.log("Form Data Submitted:", formData);
+    setUploading(false); // ✅ Hide Uploading
+    setLoading(false); // ✅ Hide Loader in Parent Component
+    alert(message); // ✅ User Feedback
+  };
+
+  return (
+    <Container className="upload-form-container">
+      <h2 className="text-center mb-4">Upload Land</h2>
+
+      {/* Form */}
+      <Form className="form-box" onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="Enter land title"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Enter description"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Location</Form.Label>
+          <Form.Control
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Enter location"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Price (Ksh)</Form.Label>
+          <Form.Control
+            type="number"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            placeholder="Enter price"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Size </Form.Label>
+          <Form.Control
+            type="text"
+            name="size"
+            value={formData.size}
+            onChange={handleChange}
+            placeholder="Enter land size"
+            required
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Land Image</Form.Label>
+          <Form.Control
+            type="file"
+            name="image_url"
+            onChange={ e =>handleFileChange (e)}
+          />
+        </Form.Group>
+
+        {/* Upload Button with Loading Indicator */}
+        <Button type="submit" className="upload-btn mt-3" disabled={uploading}>
+          {uploading ? "Uploading..." : "Upload Land"}
+        </Button>
+      </Form>
+    </Container>
+  );
+};
+
+export default LandUploadForm;
+import React, {useEffect, useState} from "react";
+import { Table, Button, Image, Form } from "react-bootstrap";
+// import { landbid } from "../api/landbids";
+import "./LandBiddingTable.css";
+import { getAvailableLand, placeBid } from "../api/bids.api";
+import { getCurrentUser } from "../api/get-current-user";
+
+const LandBiddingTable = () => {
+  const [bid, setBid] =useState(null)
+  const [lands, setLands] = useState([]);
+    useEffect(() => { 
+      getAvailableLands();
+    }, []);
+
+  async function getAvailableLands(){
+    const userId = getCurrentUser().id;
+    const data =await getAvailableLand();
+    setLands(data.filter(land => land.user_id !== userId).filter(land => land.owner_id !== userId));
+  };
+
+  async function bidLand(){
+    if(!bid) return
+    await placeBid(bid);
+    await getAvailableLands();
+  }
+
+  return (
+    <div className="container mt-4">
+      <h2 className="text-center mb-3">Land Bidding</h2>
+      <Table striped bordered hover>
+        <thead className="bg-primary text-white">
+          <tr>
+            <th>Image</th>
+            <th>Land</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Price</th>
+            <th>Size</th>
+            <th>Bid Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lands.map((land, index) => (
+            <tr key={index}>
+              <td>
+                <Image src={land.image_url} alt="Land" width="80" height="60" rounded />
+              </td>
+              <td>{land.title}</td>
+              <td>{land.description}</td>
+              <td>{land.location}</td>
+              <td>${land.price}</td>
+              <td>{land.size} acres</td>
+              <td>
+                <Form.Control onChange={e =>setBid({
+                  land_id: land.id,
+                  bid_price: e.target.value,
+                })} type="number" placeholder="Enter bid" />
+              </td>
+              <td>
+                <Button variant="success" onClick={bidLand}>Bid</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
+};
+
+export default LandBiddingTable;

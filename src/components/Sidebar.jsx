@@ -13,8 +13,8 @@ const Sidebar =() =>{
         <ul className="sidebar-links">
         <li><Link to="/dashboard">📊 Dashboard</Link></li>
         <li><Link to="/dashboard/upload-land">📤 Land Uploads</Link></li>
-        <li><Link to="/dashboard/land-bidding">⚖️ Market Place</Link></li>
-        <li><Link to="/dashboard/My-Biddings">📋 My Biddings</Link></li>
+        <li><Link to="/dashboard/market-place">🛒 Market Place</Link></li>
+        <li><Link to="/dashboard/My-Biddings">📋 Biddings</Link></li>
         <li><Link to="/dashboard/rented-lands">🏡 Rented Lands</Link></li>
         <li><Link to="/dashboard/payments">💳 Payments</Link></li>
         <li><Link to="/dashboard/reviews">⭐ Reviews</Link></li>
