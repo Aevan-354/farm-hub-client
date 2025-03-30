@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import "./LandUploadForm.css";
 import { postLand } from "../api/upload-land-api";
-import { getCurrentUser } from "../api/get-current-user";
+import { getCurrentUser } from "../api/current-user";
 
 const LandUploadForm = ({ setLoading }) => {
   const [formData, setFormData] = useState({
@@ -11,19 +11,16 @@ const LandUploadForm = ({ setLoading }) => {
     location: "",
     price: "",
     size: "",
-    landType: "",
     soilType: "",
     roadAccess: "",
-    climateInfo: "",
-    ownerContact: "",
-    ownershipType: "",
-    legalDocs: "",
     waterAvailability: "",
     electricity: "",
     marketFacilities: "",
     internetAvailability: "",
     image_url: "",
   });
+
+  const soilTypes = [ "Alluvial Soil", "Black Soil",  "Clay Soil",  "Loamy Soil",  "Silt Soil",  "Volcanic Soil",  "Peaty Soil",  "Red Soil", "Laterite Soil",  "Chernozem", "Sandy Loam",  "Clay Loam", "Silty Loam", "Humus-rich Soil", "Riverine Soil" ];
 
   const handleFileChange = (e) => {
     const fileInput = e.target;
@@ -48,6 +45,7 @@ const LandUploadForm = ({ setLoading }) => {
     console.log("Form Data Submitted:", formData);
     setLoading(false);
     alert(message);
+    e.target.reset(0)
   };
 
   // Generate Google Maps Link based on location
@@ -93,27 +91,17 @@ const LandUploadForm = ({ setLoading }) => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Type of Land</Form.Label>
-          <Form.Control as="select" name="landType" value={formData.landType} onChange={handleChange} required>
-            <option value="">Select Type</option>
-            <option value="Agricultural">Agricultural</option>
-            <option value="Commercial">Commercial</option>
+          <Form.Label>Soil Type</Form.Label>
+          <Form.Control as="select" name="soilType" value={formData.soilType} onChange={handleChange}>
+            <option value="" selected disabled>---select type---</option>
+            {soilTypes.map(type => <option key={type} value={type}>{type}</option>)}
           </Form.Control>
         </Form.Group>
 
-        <Form.Group>
-          <Form.Label>Soil Type</Form.Label>
-          <Form.Control type="text" name="soilType" value={formData.soilType} onChange={handleChange} />
-        </Form.Group>
 
         <Form.Group>
           <Form.Label>Road Accessibility</Form.Label>
           <Form.Control type="text" name="roadAccess" value={formData.roadAccess} onChange={handleChange} />
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Owner Contact</Form.Label>
-          <Form.Control type="text" name="ownerContact" value={formData.ownerContact} onChange={handleChange} required />
         </Form.Group>
 
         <Form.Group>
@@ -132,7 +120,11 @@ const LandUploadForm = ({ setLoading }) => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Internet & Mobile Network Availability</Form.Label>
+          <Form.Label>Cellular Network Coverage</Form.Label>
+          <Form.Control type="text" name="internetAvailability" value={formData.internetAvailability} onChange={handleChange} />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Internet Accessibility</Form.Label>
           <Form.Control type="text" name="internetAvailability" value={formData.internetAvailability} onChange={handleChange} />
         </Form.Group>
 
