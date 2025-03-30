@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Table, Button, Alert } from "react-bootstrap";
-import { useMarket } from "../context/MarketContext"; // Import Context
+import { API } from "../api";
 
 const MarketPlace = () => {
-  const { marketLands } = useMarket(); // Get lands from Context
+  const [marketLands, setMarketLands] =useState([])
+
+  useEffect(() =>{
+    (async () =>{
+      try {
+        const {data} =await API.get('/lands/market-place');
+        setMarketLands(data)
+        
+      } catch (error) {
+        alert('Error Loading marketplace')
+      }
+    })();
+  }, [])
 
   return (
     <Container className="mt-4">
