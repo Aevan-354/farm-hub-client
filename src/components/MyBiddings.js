@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Badge } from "react-bootstrap";
 import "./MyBiddings.css"; // Import CSS file
 import { getUserBids } from "../api/bids.api";
-import { getCurrentUser } from "../api/get-current-user";
+import { getCurrentUser } from "../api/current-user";
 
 const MyBiddings = () => {
   const [biddings, setBiddings] = useState([]);
