@@ -84,7 +84,7 @@ const handleBidClick = (land) => {
             <p><strong>Description:</strong> {selectedLand.description}</p>
             <p><strong>Location:</strong> {selectedLand.location}</p>
             <p><strong>Price:</strong> Ksh {formatCurrency(selectedLand.price)}</p>
-            <p><strong>Size:</strong> {parseInt(`${selectedLand.size}`)} Acres</p>
+            <p><strong>Size:</strong> {formatCurrency(`${selectedLand.size}`)} Acres</p>
 
             {/* ✅ Google Maps Link */}
             <p>
