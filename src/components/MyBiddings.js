@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Badge } from "react-bootstrap";
 import "./MyBiddings.css"; // Import CSS file
-import { getUserBids } from "../api/bids.api";
+import { getUserBids, removeBid } from "../api/bids.api";
 import { getCurrentUser } from "../api/current-user";
+import { formatCurrency } from "../utils/currency-formatter";
 
 const MyBiddings = () => {
   const [biddings, setBiddings] = useState([]);
@@ -15,6 +16,19 @@ const MyBiddings = () => {
     })();
   }, [])
 
+  const cancelBid = async (bidId) =>{
+    try {
+     if(window.confirm('Are you sure you want to widhdraw')){
+        await removeBid(bidId);
+        const data =await getUserBids();
+        setBiddings(data);
+        alert('Bid removed successfully')
+      }
+    } catch ({message}) {
+      alert(message)
+    }
+  }
+
 
   return (
     <div className="container">
@@ -26,10 +40,10 @@ const MyBiddings = () => {
             <th>Land</th>
             <th>Description</th>
             <th>Location</th>
-            <th>Price</th>
+            <th>Ask Price</th>
             <th>Size</th>
             <th>Status</th>
-            <th>My Bid</th>
+            <th>Bid Price</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -43,20 +57,20 @@ const MyBiddings = () => {
                 <td>{bid.title}</td>
                 <td>{bid.description}</td>
                 <td>{bid.location}</td>
-                <td>{bid.price}</td>
-                <td>{bid.size}</td>
+                <td>KSH {formatCurrency(bid.price)}</td>
+                <td>{formatCurrency(bid.size)}</td>
                 <td>
                 {bid.status === "sold"? (
                     bid.won ? <Badge bg="success">Won</Badge> : <Badge bg="danger">Sold</Badge>
                   ): bid.status === "closed" ? <Badge bg="secondary">Closed</Badge> : <Badge bg="primary">Open</Badge>}
                 </td>
-                <td>ksh. {bid.bid_price}</td>
+                <td>KSH. {formatCurrency(bid.bid_price)}</td>
                 
                 <td>
                   {bid.status === "sold" && bid.won ? (
                     <Button variant="success">Pay & Rent</Button>
-                  ) : bid.status === "open"? <Button variant="warning">Cancel</Button> : (
-                    <Button variant="secondary" disabled >Cancel</Button>
+                  ) : bid.status === "open"? <Button variant="warning" onClick={() =>cancelBid(bid.bid_id)}>Widhdraw</Button> : (
+                    <Button variant="secondary" onClick={() =>cancelBid(bid.bid_id)} >Widhdraw</Button>
                   )}
                 </td>
               </tr>
