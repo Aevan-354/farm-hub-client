@@ -1,5 +1,5 @@
 import { API } from ".";
-import { getCurrentUser } from "./get-current-user"
+import { getCurrentUser } from "./current-user"
 
 export const getUserBids = async () => {
     const currentUserId =getCurrentUser().id;
