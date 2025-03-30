@@ -3,6 +3,7 @@ import { Row, Col, Card, Spinner, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";  // ✅ Import useNavigate
 import { API } from "../api";
 import "./Dashboard.css"; // ✅ Ensure you have proper styling
+import { formatCurrency } from "../utils/currency-formatter";
 
 const Dashboard = () => {
   const [lands, setLands] = useState([]);
@@ -82,7 +83,7 @@ const handleBidClick = (land) => {
             <h4>{selectedLand.title}</h4>
             <p><strong>Description:</strong> {selectedLand.description}</p>
             <p><strong>Location:</strong> {selectedLand.location}</p>
-            <p><strong>Price:</strong> Ksh {selectedLand.price}</p>
+            <p><strong>Price:</strong> Ksh {formatCurrency(selectedLand.price)}</p>
             <p><strong>Size:</strong> {parseInt(`${selectedLand.size}`)} Acres</p>
 
             {/* ✅ Google Maps Link */}
@@ -136,7 +137,7 @@ const handleBidClick = (land) => {
                 <Card.Body>
                   <Card.Title>{land.title}</Card.Title>
                   <p><strong>Location:</strong> {land.location}</p>
-                  <p><strong>Price:</strong> Ksh {land.price}</p>
+                  <p><strong>Price:</strong> Ksh {formatCurrency(land.price)}</p>
                 <Button onClick={() => setSelectedLand(land)}>View</Button>
                 </Card.Body>
               </Card>

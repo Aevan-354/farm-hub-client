@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Table, Button, Alert } from "react-bootstrap";
 import { API } from "../api";
+import { formatCurrency } from "../utils/currency-formatter";
 
 const MarketPlace = () => {
   const [marketLands, setMarketLands] =useState([])
@@ -30,7 +31,7 @@ const MarketPlace = () => {
               <th>Title</th>
               <th>Location</th>
               <th>Size</th>
-              <th>Price</th>
+              <th>Ask Price</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -40,7 +41,7 @@ const MarketPlace = () => {
                 <td>{land.title}</td>
                 <td>{land.location}</td>
                 <td>{land.size} Acres</td>
-                <td>Ksh {land.price.toLocaleString()}</td>
+                <td>Ksh {formatCurrency(land.price)}</td>
                 <td>
                   <Button variant="success">Place Bid</Button>
                 </td>
