@@ -12,6 +12,10 @@ export const placeBid = async (payload) => {
     return await API.post(`/bids`, {...payload, user_id: currentUserId});
 }
 
+export const removeBid = async (bidId) => {
+    return await API.delete(`/bids/${bidId}`);
+}
+
 export const getAvailableLand = async () => {
     const {data} =await API.get(`/lands/available`);
     return data;
