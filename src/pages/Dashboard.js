@@ -26,13 +26,18 @@ const Dashboard = () => {
   }, []);
 
   const removeLandFromMarket =async land =>{
-    if(window.confirm('Are you sure to remove land from market?')){
-      await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: false});
-      selectedLand({
-        ...land,
-        is_in_marketplace: false
-      })
-
+    try {
+      
+      if(window.confirm('Are you sure to remove land from market?')){
+        await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: false});
+        setSelectedLand({
+          ...land,
+          is_in_marketplace: false
+        })
+  
+      }
+    } catch ({message}) {
+      alert(message)
     }
   }
 
@@ -40,13 +45,13 @@ const Dashboard = () => {
     try {
       
       const {data: {message}} =await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: true});
-      selectedLand({
+      setSelectedLand({
         ...land,
         is_in_marketplace: true
       })
       alert(message)
-    } catch (error) {
-      alert('Error Listing Land')
+    } catch ({message}) {
+      alert(message)
     }
   }
   // ✅ Function to handle Bid Now button click
@@ -93,9 +98,18 @@ const handleBidClick = (land) => {
             </p>
 
             {/* ✅ "Bid Now" Button - Uses handleBidClick */}
-            <Button onClick={() => listLandToMarket(selectedLand)} className="btn btn-success">
-              List On Market
-            </Button>
+            {
+              !selectedLand.is_in_marketplace? (
+                <Button onClick={() => listLandToMarket(selectedLand)} className="btn btn-success">
+                  Add To Marketplace
+                </Button>
+              ) : (
+                <Button onClick={() => removeLandFromMarket(selectedLand)} className="btn btn-danger">
+                  Remove From Marketplace
+                </Button>
+
+              )
+            }
           </Col>
         </Row>
       )}
