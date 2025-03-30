@@ -25,6 +25,30 @@ const Dashboard = () => {
     fetchLands();
   }, []);
 
+  const removeLandFromMarket =async land =>{
+    if(window.confirm('Are you sure to remove land from market?')){
+      await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: false});
+      selectedLand({
+        ...land,
+        is_in_marketplace: false
+      })
+
+    }
+  }
+
+  const listLandToMarket =async land =>{
+    try {
+      
+      const {data: {message}} =await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: true});
+      selectedLand({
+        ...land,
+        is_in_marketplace: true
+      })
+      alert(message)
+    } catch (error) {
+      alert('Error Listing Land')
+    }
+  }
   // ✅ Function to handle Bid Now button click
 const handleBidClick = (land) => {
   if (land && land._id) {
@@ -69,8 +93,8 @@ const handleBidClick = (land) => {
             </p>
 
             {/* ✅ "Bid Now" Button - Uses handleBidClick */}
-            <Button onClick={() => handleBidClick(selectedLand)} className="btn btn-success">
-              Bid Now
+            <Button onClick={() => listLandToMarket(selectedLand)} className="btn btn-success">
+              List On Market
             </Button>
           </Col>
         </Row>
@@ -86,7 +110,6 @@ const handleBidClick = (land) => {
             <Col md={4} key={land.id || land._id} className="mb-4">
               <Card
                 className="land-card"
-                onClick={() => setSelectedLand(land)}
                 style={{ cursor: "pointer" }}
               >
                 <Card.Img
@@ -100,6 +123,7 @@ const handleBidClick = (land) => {
                   <Card.Title>{land.title}</Card.Title>
                   <p><strong>Location:</strong> {land.location}</p>
                   <p><strong>Price:</strong> Ksh {land.price}</p>
+                <Button onClick={() => setSelectedLand(land)}>View</Button>
                 </Card.Body>
               </Card>
             </Col>
