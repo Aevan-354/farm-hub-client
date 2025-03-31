@@ -1,7 +1,7 @@
 import  { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { getCurrentUser } from '../api/get-current-user';
+import { getCurrentUser } from '../api/current-user';
 const Sidebar =() =>{
     const [currentUser, setCurrentUser] =useState({})
     useEffect(() =>{

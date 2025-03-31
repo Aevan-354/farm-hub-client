@@ -15,7 +15,7 @@ import RentedLands from './components/RentedLands';
 import PaymentTable from './components/PaymentTable';
 import ReviewForm from "./components/ReviewForm";
 import Profile from "./pages/Profile"
-import MarketPlace from "./components/BidForm";
+import MarketPlace from "./pages/MarketPlace";
 import BidPage from "./pages/BidPage";
 
 function App() {

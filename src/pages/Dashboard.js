@@ -3,6 +3,7 @@ import { Row, Col, Card, Spinner, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";  // ✅ Import useNavigate
 import { API } from "../api";
 import "./Dashboard.css"; // ✅ Ensure you have proper styling
+import { formatCurrency } from "../utils/currency-formatter";
 
 const Dashboard = () => {
   const [lands, setLands] = useState([]);
@@ -25,6 +26,35 @@ const Dashboard = () => {
     fetchLands();
   }, []);
 
+  const removeLandFromMarket =async land =>{
+    try {
+      
+      if(window.confirm('Are you sure to remove land from market?')){
+        await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: false});
+        setSelectedLand({
+          ...land,
+          is_in_marketplace: false
+        })
+  
+      }
+    } catch ({message}) {
+      alert(message)
+    }
+  }
+
+  const listLandToMarket =async land =>{
+    try {
+      
+      const {data: {message}} =await API.post(`/lands/market-place/${land.id}`, {is_in_marketplace: true});
+      setSelectedLand({
+        ...land,
+        is_in_marketplace: true
+      })
+      alert(message)
+    } catch ({message}) {
+      alert(message)
+    }
+  }
   // ✅ Function to handle Bid Now button click
 const handleBidClick = (land) => {
   if (land && land._id) {
@@ -53,8 +83,8 @@ const handleBidClick = (land) => {
             <h4>{selectedLand.title}</h4>
             <p><strong>Description:</strong> {selectedLand.description}</p>
             <p><strong>Location:</strong> {selectedLand.location}</p>
-            <p><strong>Price:</strong> Ksh {selectedLand.price}</p>
-            <p><strong>Size:</strong> {parseInt(`${selectedLand.size}`)} Acres</p>
+            <p><strong>Price:</strong> Ksh {formatCurrency(selectedLand.price)}</p>
+            <p><strong>Size:</strong> {formatCurrency(`${selectedLand.size}`)} Acres</p>
 
             {/* ✅ Google Maps Link */}
             <p>
@@ -69,9 +99,18 @@ const handleBidClick = (land) => {
             </p>
 
             {/* ✅ "Bid Now" Button - Uses handleBidClick */}
-            <Button onClick={() => handleBidClick(selectedLand)} className="btn btn-success">
-              Bid Now
-            </Button>
+            {
+              !selectedLand.is_in_marketplace? (
+                <Button onClick={() => listLandToMarket(selectedLand)} className="btn btn-success">
+                  Add To Marketplace
+                </Button>
+              ) : (
+                <Button onClick={() => removeLandFromMarket(selectedLand)} className="btn btn-danger">
+                  Remove From Marketplace
+                </Button>
+
+              )
+            }
           </Col>
         </Row>
       )}
@@ -86,7 +125,6 @@ const handleBidClick = (land) => {
             <Col md={4} key={land.id || land._id} className="mb-4">
               <Card
                 className="land-card"
-                onClick={() => setSelectedLand(land)}
                 style={{ cursor: "pointer" }}
               >
                 <Card.Img
@@ -99,7 +137,8 @@ const handleBidClick = (land) => {
                 <Card.Body>
                   <Card.Title>{land.title}</Card.Title>
                   <p><strong>Location:</strong> {land.location}</p>
-                  <p><strong>Price:</strong> Ksh {land.price}</p>
+                  <p><strong>Price:</strong> Ksh {formatCurrency(land.price)}</p>
+                <Button onClick={() => setSelectedLand(land)}>View</Button>
                 </Card.Body>
               </Card>
             </Col>

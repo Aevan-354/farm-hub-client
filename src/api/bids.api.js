@@ -1,5 +1,5 @@
 import { API } from ".";
-import { getCurrentUser } from "./get-current-user"
+import { getCurrentUser } from "./current-user"
 
 export const getUserBids = async () => {
     const currentUserId =getCurrentUser().id;
@@ -10,6 +10,10 @@ export const getUserBids = async () => {
 export const placeBid = async (payload) => {
     const currentUserId =getCurrentUser().id;
     return await API.post(`/bids`, {...payload, user_id: currentUserId});
+}
+
+export const removeBid = async (bidId) => {
+    return await API.delete(`/bids/${bidId}`);
 }
 
 export const getAvailableLand = async () => {

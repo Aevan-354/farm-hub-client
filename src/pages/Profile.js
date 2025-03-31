@@ -1,46 +1,68 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Form, Button, Card, Row, Col } from "react-bootstrap";
+import { API } from "../api";
+import { getCurrentUser, setCurrentUserDetails } from "../api/current-user";
 
 const Profile = () => {
-  const [user, setUser] = useState({ name: "Aevan", email: "aevan@example.com", profile_pic: "" });
+  const [currentUser, setCurrentUser] = useState({});
   const [newPassword, setNewPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [profilePic, setProfilePic] = useState(null);
 
   // Fetch user data (You can replace with actual API call)
   useEffect(() => {
-    axios.get("/api/profile").then((response) => {
-      setUser(response.data);
-    });
+    try {
+      const userId =getCurrentUser().id;
+      API.get(`/profile/${userId}`).then((response) => {
+        saveCurrentUser(response.data);
+      });
+      
+    } catch (error) {
+      alert('Error getting profile')
+    }
   }, []);
 
+const saveCurrentUser =user =>{
+  if(!user) return;
+  setCurrentUser(user);
+  setCurrentUserDetails(user);
+}
+
+  const handleFileChange = async (e) => {
+    const fileInput = e.target;
+    if (!(fileInput && fileInput.files.length)) return;
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      setProfilePic(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleProfilePicUpload =async e =>{
+    e.preventDefault();
+    try {
+      const {data: {user, message}} =await API.put(`/profile/${currentUser.id}`, {profile_image: profilePic});
+      saveCurrentUser(user);
+      alert(message)
+    } catch ({message}) {
+      alert(message)
+    }
+  }
   // Handle password update
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/profile/update-password", { currentPassword, newPassword });
-      alert("Password updated successfully");
+      const {data: {user, message}} =await API.put(`/profile/${currentUser.id}`, { currentPassword, newPassword });
+      saveCurrentUser(user)
+      alert(message);
     } catch (error) {
       alert("Error updating password");
     }
   };
 
-  // Handle profile picture upload
-  const handleProfilePicUpload = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("profilePic", profilePic);
 
-    try {
-      const response = await axios.post("/api/profile/upload-profile-pic", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setUser((prev) => ({ ...prev, profile_pic: response.data.profilePic }));
-    } catch (error) {
-      alert("Error uploading profile picture");
-    }
-  };
 
   return (
     <Container className="mt-4">
@@ -48,13 +70,13 @@ const Profile = () => {
         <Row>
           <Col md={4} className="text-center">
             <img
-              src={user.profile_pic ? `/uploads/${user.profile_pic}` : "https://via.placeholder.com/150"}
+              src={(currentUser.profile_image && currentUser.profile_image) ?? "https://cdn.pixabay.com/photo/2015/10/18/20/15/woman-995164_1280.png"}
               alt="Profile"
               className="rounded-circle mb-3"
               style={{ width: "150px", height: "150px", objectFit: "cover" }}
             />
-            <h4>{user.name}</h4>
-            <p className="text-muted">{user.email}</p>
+            <h4>{currentUser.name}</h4>
+            <p className="text-muted">{currentUser.email}</p>
           </Col>
 
           <Col md={8}>
@@ -89,7 +111,7 @@ const Profile = () => {
               <h5>Upload Profile Picture</h5>
               <Form onSubmit={handleProfilePicUpload}>
                 <Form.Group className="mb-2">
-                  <Form.Control type="file" onChange={(e) => setProfilePic(e.target.files[0])} required />
+                  <Form.Control type="file" accept="image/*" onChange={(e) => handleFileChange(e)} required />
                 </Form.Group>
                 <Button type="submit" variant="success" className="w-100">
                   Upload
