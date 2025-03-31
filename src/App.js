@@ -45,6 +45,7 @@ function App() {
             <Route path="reviews" element={<ReviewForm />} /> 
             <Route path="profile" element={<Profile />} />
             <Route path="market-place" element={<MarketPlace/>} />
+            <Route path="bid-page" element={<BidPage/>} />
           </Route>
         </Routes>
         <Footer />
