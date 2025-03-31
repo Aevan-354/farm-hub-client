@@ -17,6 +17,7 @@ import ReviewForm from "./components/ReviewForm";
 import Profile from "./pages/Profile"
 import MarketPlace from "./pages/MarketPlace";
 import BidPage from "./pages/BidPage";
+import LandBiddings from "./pages/LandBiddings";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
             <Route path="reviews" element={<ReviewForm />} /> 
             <Route path="profile" element={<Profile />} />
             <Route path="market-place" element={<MarketPlace/>} />
+            <Route path="land-biddings/:id" element={<LandBiddings />} />
           </Route>
         </Routes>
         <Footer />
