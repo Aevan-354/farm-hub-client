@@ -98,19 +98,28 @@ const handleBidClick = (land) => {
               </a>
             </p>
 
-            {/* ✅ "Bid Now" Button - Uses handleBidClick */}
-            {
-              !selectedLand.is_in_marketplace? (
-                <Button onClick={() => listLandToMarket(selectedLand)} className="btn btn-success">
-                  Add To Marketplace
-                </Button>
-              ) : (
-                <Button onClick={() => removeLandFromMarket(selectedLand)} className="btn btn-danger">
-                  Remove From Marketplace
-                </Button>
+            <Row>
+              <Col>
+                    {
+                    !selectedLand.is_in_marketplace? (
+                      <Button onClick={() => listLandToMarket(selectedLand)} className="btn btn-success">
+                        Add To Marketplace
+                      </Button>
+                    ) : (
+                      <Button onClick={() => removeLandFromMarket(selectedLand)} className="btn btn-danger">
+                        Remove From Marketplace
+                      </Button>
 
-              )
-            }
+                    )
+                  }
+              </Col>
+              <Col>
+              <Button onClick={() => navigate(`/dashboard/land-biddings/${selectedLand.id}`)} variant="primary">
+                View Bids
+              </Button>
+              </Col>
+            </Row>
+            
           </Col>
         </Row>
       )}
