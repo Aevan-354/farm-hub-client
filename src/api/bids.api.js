@@ -27,7 +27,7 @@ export const getAvailableLand = async () => {
 }
 
 
-export const selectHighestBidder = async (bidId, bidder_id) => {
-    const {data} =await API.post(`/bids/select-winner/${bidId}`, {bidder_id});
+export const selectHighestBidder = async (bidId, land_id) => {
+    const {data} =await API.put(`/bids/${bidId}`, {land_id, won:true});
     return data;
 }
