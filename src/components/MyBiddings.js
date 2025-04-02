@@ -8,7 +8,7 @@ import PaymentPrompt from "./PaymentPrompt";
 
 const MyBiddings = () => {
   const [biddings, setBiddings] = useState([]);
-  const [selectedBid, setSelectedBid] = useState([]);
+  const [selectedBid, setSelectedBid] = useState(null);
   const [userId, setUserId] = useState("");
 
   const [showPaymentPrompt, setShowPaymentPrompt] =useState(false);

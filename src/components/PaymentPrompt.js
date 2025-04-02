@@ -2,20 +2,28 @@ import React, { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import { Col, Row, Button, Form, Spinner } from 'react-bootstrap';
 import { iniatePayment } from "../api/payments.api";
+import { formatCurrency } from "../utils/currency-formatter";
 
 function PaymentPrompt({setShow, show, bid}) {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [isLoading, setIsLoading] =useState(false);
+    const [error, setError] =useState(null);
+
     const handleBidSubmit =async e =>{
+        setError(null)
         e.preventDefault();
-        if(!phoneNumber) return;
+        if(!phoneNumber) {
+            setError('Phone number required*')
+            return;
+        }
         setIsLoading(true);
         try {
-            await iniatePayment({phone: phoneNumber, land_id: bid.id})
+            if(phoneNumber.length <10 || phoneNumber.length >13) setError('Phone number must have between 10-13 digits')
+            await iniatePayment(bid.bid_id, bid.bid_price, phoneNumber)
             setShow(null, false)
             setPhoneNumber('')
-        } catch (error) {
-            
+        } catch ({message}) {
+            alert(message);
         }finally{
             setIsLoading(false);
         }
@@ -24,7 +32,7 @@ function PaymentPrompt({setShow, show, bid}) {
 
       <Modal show={show && bid} onHide={() =>setShow(null, false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Pay {bid?.bid_price}</Modal.Title>
+          <Modal.Title>Pay KSH. {formatCurrency(bid?.bid_price)}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
         <Form onSubmit={handleBidSubmit} className="mt-3">
@@ -34,10 +42,14 @@ function PaymentPrompt({setShow, show, bid}) {
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="We'll send an stk push to this number"
+                  placeholder="e.g 254xxxxxxxxx"
                   required
                 />
               </Form.Group>
+              {
+              error
+              ? <small style={{fontSize: '10px', display: 'block', paddingTop: '8px'}} className="text-danger">{error}</small>
+              : <small style={{fontSize: '10px', display: 'block', paddingTop: '8px'}} className="text-success">We'll send an stk push to this number</small>}
             </Form>
         </Modal.Body>
         <Modal.Footer>
