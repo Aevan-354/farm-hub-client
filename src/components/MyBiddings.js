@@ -4,17 +4,29 @@ import "./MyBiddings.css"; // Import CSS file
 import { getUserBids, removeBid } from "../api/bids.api";
 import { getCurrentUser } from "../api/current-user";
 import { formatCurrency } from "../utils/currency-formatter";
+import PaymentPrompt from "./PaymentPrompt";
 
 const MyBiddings = () => {
   const [biddings, setBiddings] = useState([]);
+  const [selectedBid, setSelectedBid] = useState([]);
   const [userId, setUserId] = useState("");
+
+  const [showPaymentPrompt, setShowPaymentPrompt] =useState(false);
+  const handleBidSelection =async (land, visible) =>{
+    setSelectedBid(land)
+    setShowPaymentPrompt(visible);
+    await getMyBids();
+  }
+
   useEffect(() => { 
-    (async () => {
-      setUserId(getCurrentUser().id);
-      const data =await getUserBids();
-      setBiddings(data);
-    })();
+   getMyBids()
   }, [])
+
+  const getMyBids =async () =>{
+    setUserId(getCurrentUser().id);
+    const data =await getUserBids();
+    setBiddings(data);
+  }
 
   const cancelBid = async (bidId) =>{
     try {
@@ -68,7 +80,7 @@ const MyBiddings = () => {
                 
                 <td>
                   {bid.status === "closed" && bid.won ? (
-                    <Button variant="success">Pay & Rent</Button>
+                    <Button variant="success" onClick={() =>handleBidSelection(bid, true)}>Pay & Rent</Button>
                   ) : bid.status === "open"? <Button variant="warning" onClick={() =>cancelBid(bid.bid_id)}>Widhdraw</Button> : (
                     <Button variant="secondary" >{bid.status}</Button>
                   )}
@@ -78,6 +90,7 @@ const MyBiddings = () => {
           })}
         </tbody>
       </Table>
+      <PaymentPrompt setShow={handleBidSelection} show={showPaymentPrompt} bid={selectedBid}/>
     </div>
   );
 };
