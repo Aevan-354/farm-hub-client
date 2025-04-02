@@ -18,7 +18,7 @@ const LandBiddings = () => {
   const selectWinner = async (land) =>{
     try {
      if(window.confirm(`Select ${land.username} as winner?`)){
-        await selectHighestBidder(land.bid_id, land.bidder_id)
+        await selectHighestBidder(land.bid_id, land.id)
         const data =await getLandBids(land.id);
         setBiddings(data);
         alert(`${land.username} is selected as the bid winner. Bid closed`)
@@ -52,7 +52,7 @@ const LandBiddings = () => {
                 <td>{bid.location}</td>
                 <td>KSH. {formatCurrency(bid.bid_price)}</td>
                 <td>{bid.username}</td>
-                <td><Button variant="primary" onClick={() =>selectWinner(bid)}>Winner</Button></td>
+                <td><Button variant="primary" onClick={() =>selectWinner(bid)}>Pick Bid</Button></td>
               </tr>
             );
           })}
