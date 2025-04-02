@@ -1,0 +1,65 @@
+/* CustomNavbar.css */
+
+.nav-item {
+    position: relative;
+  }
+  
+  .nav-item .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    float: left;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+  }
+  
+  .nav-item:hover .dropdown-menu {
+    display: block;
+  }
+  
+  .card-dropdown {
+    padding: 0;
+  }
+  
+  .card-dropdown .card {
+    margin: 0;
+  }
+  
+  .card-dropdown .card-body {
+    padding: 1rem;
+  }
+  
+  .card-dropdown .card-title {
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-dropdown .card-text ul {
+    padding-left: 1rem;
+    margin-bottom: 0;
+  }
+  
+  .card-dropdown .card-text ul li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-dropdown .card-text ul li a {
+    color: #0d6efd;
+    text-decoration: none;
+  }
+  
+  .card-dropdown .card-text ul li a:hover {
+    text-decoration: underline;
+  }
+  
