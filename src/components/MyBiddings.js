@@ -60,17 +60,17 @@ const MyBiddings = () => {
                 <td>KSH {formatCurrency(bid.price)}</td>
                 <td>{formatCurrency(bid.size)}</td>
                 <td>
-                {bid.status === "sold"? (
-                    bid.won ? <Badge bg="success">Won</Badge> : <Badge bg="danger">Sold</Badge>
-                  ): bid.status === "closed" ? <Badge bg="secondary">Closed</Badge> : <Badge bg="primary">Open</Badge>}
+                {bid.status === "closed"? (
+                    bid.won ? <Badge bg="success">Won</Badge> : <Badge bg="secondary">Closed</Badge>
+                  ): bid.status === "sold" ?  <Badge bg="danger">Sold</Badge>: <Badge bg="primary">Open</Badge>}
                 </td>
                 <td>KSH. {formatCurrency(bid.bid_price)}</td>
                 
                 <td>
-                  {bid.status === "sold" && bid.won ? (
+                  {bid.status === "closed" && bid.won ? (
                     <Button variant="success">Pay & Rent</Button>
                   ) : bid.status === "open"? <Button variant="warning" onClick={() =>cancelBid(bid.bid_id)}>Widhdraw</Button> : (
-                    <Button variant="secondary" onClick={() =>cancelBid(bid.bid_id)} >Widhdraw</Button>
+                    <Button variant="secondary" >{bid.status}</Button>
                   )}
                 </td>
               </tr>
